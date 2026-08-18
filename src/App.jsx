@@ -8,7 +8,34 @@ import { CartDrawer } from './components/CartDrawer';
 import { Footer } from './components/Footer';
 
 export function App() {
-  // Fetch real product data dynamically from Supabase
+  // REQUIREMENT 4: Dark Mode Theme State & Persistence
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('crocbag_theme');
+      if (saved !== null) {
+        return saved === 'dark';
+      }
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (darkMode) {
+      root.classList.add('dark');
+      localStorage.setItem('crocbag_theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('crocbag_theme', 'light');
+    }
+  }, [darkMode]);
+
+  const handleToggleDarkMode = () => {
+    setDarkMode((prev) => !prev);
+  };
+
+  // Fetch product data dynamically from Supabase
   const { products, loading, error, refetch } = useProducts();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -17,7 +44,7 @@ export function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
-  // Modal State for Crocs Size & Quantity Selection
+  // Modal State for Size & Quantity Selection
   const [selectedProductForModal, setSelectedProductForModal] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -54,7 +81,7 @@ export function App() {
     setIsModalOpen(true);
   };
 
-  // Add Item to Cart Handler (supports custom quantity and size variant)
+  // Add Item to Cart Handler
   const handleAddToCart = (productToAdd) => {
     const qtyToAdd = productToAdd.quantity || 1;
     const variantKey = productToAdd.selected_variant || 'default';
@@ -111,15 +138,12 @@ export function App() {
   // Multi-Filter Logic (Audience, Type, Search)
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
-      // 1. Audience Filter (Men, Women, Kids, ALL)
       const matchesAudience =
         selectedCategory === 'ALL' ||
         (p.target_audience && p.target_audience.includes(selectedCategory));
 
-      // 2. Product Type Filter (Crocs, Bags, ALL)
       const matchesType = selectedType === 'ALL' || p.type === selectedType;
 
-      // 3. Search Query Filter
       const query = searchQuery.toLowerCase().trim();
       const matchesSearch =
         !query ||
@@ -142,7 +166,6 @@ export function App() {
   const totalCartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
   const featuredProduct = products.find((p) => p.is_featured) || products[0];
 
-  // Helper for featured product image path
   const featuredImageUrl = useMemo(() => {
     if (!featuredProduct) return '/assets/crocs_classic_clog.png';
     const img = featuredProduct.images?.[0] || featuredProduct.image_url;
@@ -151,9 +174,9 @@ export function App() {
   }, [featuredProduct]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-pink-500 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-pink-500 selection:text-white transition-colors duration-300">
       
-      {/* Header Navigation */}
+      {/* Header Navigation with Dark Mode toggle prop */}
       <Header
         cartCount={totalCartCount}
         onOpenCart={() => setIsCartOpen(true)}
@@ -163,25 +186,27 @@ export function App() {
         onSelectCategory={setSelectedCategory}
         selectedType={selectedType}
         onSelectType={setSelectedType}
+        darkMode={darkMode}
+        onToggleDarkMode={handleToggleDarkMode}
       />
 
       {/* Hero Visual Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-pink-50 via-purple-50/50 to-indigo-50 border-b border-slate-200/60 py-10 sm:py-16 px-4 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden bg-gradient-to-br from-pink-50 via-purple-50/50 to-indigo-50 dark:from-slate-900 dark:via-purple-950/30 dark:to-slate-900 border-b border-slate-200/60 dark:border-slate-800 py-10 sm:py-16 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
           
           <div className="max-w-xl space-y-4 text-center md:text-left">
-            <div className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-pink-200 shadow-xs">
+            <div className="inline-flex items-center space-x-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-pink-200 dark:border-pink-900/50 shadow-xs">
               <span className="w-2 h-2 rounded-full bg-pink-500 animate-ping" />
-              <span className="text-xs font-bold text-pink-700 tracking-wide">
+              <span className="text-xs font-bold text-pink-700 dark:text-pink-400 tracking-wide">
                 Live Supabase Database Connected
               </span>
             </div>
 
-            <h1 className="font-heading font-extrabold text-3xl sm:text-5xl text-slate-900 leading-tight">
-              Comfort Meets Style with <span className="bg-gradient-to-r from-pink-600 to-indigo-600 bg-clip-text text-transparent">Crocs & Bags</span>
+            <h1 className="font-heading font-extrabold text-3xl sm:text-5xl text-slate-900 dark:text-white leading-tight">
+              Comfort Meets Style with <span className="bg-gradient-to-r from-pink-600 to-indigo-600 dark:from-pink-400 dark:to-indigo-400 bg-clip-text text-transparent">Crocs & Bags</span>
             </h1>
 
-            <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
               Explore vibrant pastel clogs, platform slides, handcrafted tote bags & mini crossbodies directly powered by Supabase. Order directly to your WhatsApp with instant confirmation.
             </p>
 
@@ -189,19 +214,19 @@ export function App() {
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-2">
               <button
                 onClick={() => { setSelectedType('Crocs'); setSelectedCategory('ALL'); }}
-                className="px-4 py-2 bg-white hover:bg-pink-50 text-slate-800 text-xs font-bold rounded-2xl shadow-sm border border-slate-200 transition-all flex items-center space-x-1.5 cursor-pointer"
+                className="px-4 py-2 bg-white dark:bg-slate-800 hover:bg-pink-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-all flex items-center space-x-1.5 cursor-pointer"
               >
                 <span>👟 Shop Crocs</span>
               </button>
               <button
                 onClick={() => { setSelectedType('Bags'); setSelectedCategory('ALL'); }}
-                className="px-4 py-2 bg-white hover:bg-indigo-50 text-slate-800 text-xs font-bold rounded-2xl shadow-sm border border-slate-200 transition-all flex items-center space-x-1.5 cursor-pointer"
+                className="px-4 py-2 bg-white dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-all flex items-center space-x-1.5 cursor-pointer"
               >
                 <span>👜 Shop Bags</span>
               </button>
               <button
                 onClick={() => { setSelectedCategory('Kids'); }}
-                className="px-4 py-2 bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-bold rounded-2xl transition-all cursor-pointer"
+                className="px-4 py-2 bg-amber-100 dark:bg-amber-950/50 hover:bg-amber-200 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-300 text-xs font-bold rounded-2xl transition-all cursor-pointer"
               >
                 <span>👧 Kids Special</span>
               </button>
@@ -210,15 +235,15 @@ export function App() {
 
           {/* Hero Feature Banner Visual */}
           {featuredProduct && (
-            <div className="w-full md:w-96 aspect-video md:aspect-square bg-white rounded-3xl p-6 shadow-xl border border-slate-100 flex flex-col justify-between relative overflow-hidden group">
-              <div className="absolute -top-12 -right-12 w-40 h-40 bg-pink-300/30 rounded-full blur-2xl group-hover:scale-125 transition-transform" />
-              <div className="absolute -bottom-12 -left-12 w-40 h-40 bg-indigo-300/30 rounded-full blur-2xl group-hover:scale-125 transition-transform" />
+            <div className="w-full md:w-96 aspect-video md:aspect-square bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-xl border border-slate-100 dark:border-slate-800 flex flex-col justify-between relative overflow-hidden group transition-colors duration-300">
+              <div className="absolute -top-12 -right-12 w-40 h-40 bg-pink-300/30 dark:bg-pink-600/20 rounded-full blur-2xl group-hover:scale-125 transition-transform" />
+              <div className="absolute -bottom-12 -left-12 w-40 h-40 bg-indigo-300/30 dark:bg-indigo-600/20 rounded-full blur-2xl group-hover:scale-125 transition-transform" />
               
               <div className="relative z-10 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-widest text-pink-600 bg-pink-50 px-2.5 py-1 rounded-full">
+                <span className="text-xs font-bold uppercase tracking-widest text-pink-600 dark:text-pink-400 bg-pink-50 dark:bg-pink-950/60 px-2.5 py-1 rounded-full">
                   Featured Deal
                 </span>
-                <span className="text-xs font-bold text-slate-400">⚡ Live Supabase Item</span>
+                <span className="text-xs font-bold text-slate-400 dark:text-slate-500">⚡ Live Supabase Item</span>
               </div>
 
               <div className="relative z-10 my-4 text-center">
@@ -230,19 +255,19 @@ export function App() {
                 />
               </div>
 
-              <div className="relative z-10 flex items-center justify-between pt-2 border-t border-slate-100">
+              <div className="relative z-10 flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
                 <div>
-                  <h4 className="font-heading font-bold text-sm text-slate-900 line-clamp-1">{featuredProduct.title}</h4>
-                  <p className="text-xs text-pink-600 font-extrabold">
+                  <h4 className="font-heading font-bold text-sm text-slate-900 dark:text-slate-100 line-clamp-1">{featuredProduct.title}</h4>
+                  <p className="text-xs text-pink-600 dark:text-pink-400 font-extrabold">
                     ${featuredProduct.price.toFixed(2)}{' '}
-                    {featuredProduct.original_price && (
-                      <span className="line-through text-slate-400 font-normal">${featuredProduct.original_price.toFixed(2)}</span>
+                    {featuredProduct.original_price && featuredProduct.original_price > featuredProduct.price && (
+                      <span className="line-through text-slate-400 dark:text-slate-500 font-normal">${featuredProduct.original_price.toFixed(2)}</span>
                     )}
                   </p>
                 </div>
                 <button
                   onClick={() => handleOpenModal(featuredProduct)}
-                  className="px-3.5 py-2 bg-slate-900 hover:bg-pink-600 text-white rounded-xl text-xs font-bold shadow-md transition-colors cursor-pointer"
+                  className="px-3.5 py-2 bg-slate-900 dark:bg-pink-600 hover:bg-pink-600 dark:hover:bg-pink-500 text-white rounded-xl text-xs font-bold shadow-md transition-colors cursor-pointer"
                 >
                   Select Size & Qty
                 </button>
@@ -258,12 +283,12 @@ export function App() {
         
         {/* Error Alert Banner */}
         {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 text-red-800 p-4 rounded-2xl flex items-center justify-between shadow-sm">
+          <div className="mb-6 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 p-4 rounded-2xl flex items-center justify-between shadow-sm">
             <div className="flex items-center space-x-3">
               <span className="text-xl">⚠️</span>
               <div>
                 <h4 className="font-bold text-sm">Supabase Query Warning</h4>
-                <p className="text-xs text-red-600">{error}</p>
+                <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
               </div>
             </div>
             <button
@@ -289,7 +314,7 @@ export function App() {
         {loading ? (
           <div className="py-16 text-center space-y-4">
             <div className="w-12 h-12 border-4 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-sm font-semibold text-slate-600">Fetching live product data from Supabase...</p>
+            <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">Fetching live product data from Supabase...</p>
           </div>
         ) : (
           /* Product Grid */
@@ -323,8 +348,8 @@ export function App() {
 
       {/* Toast Notification Banner */}
       {toastMessage && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl text-xs sm:text-sm font-semibold flex items-center space-x-2 animate-bounce border border-slate-700">
-          <span className="text-pink-400">✨</span>
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-5 py-3 rounded-2xl shadow-2xl text-xs sm:text-sm font-semibold flex items-center space-x-2 animate-bounce border border-slate-700 dark:border-slate-300">
+          <span className="text-pink-400 dark:text-pink-600">✨</span>
           <span>{toastMessage}</span>
         </div>
       )}

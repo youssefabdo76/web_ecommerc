@@ -1,24 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export const Footer = ({ onSelectCategory, onSelectType }) => {
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    if (email) {
-      setSubscribed(true);
-      setEmail('');
-      setTimeout(() => setSubscribed(false), 4000);
-    }
-  };
-
   return (
-    <footer className="bg-slate-900 text-slate-300 pt-16 pb-12 border-t border-slate-800">
+    <footer className="bg-slate-900 dark:bg-slate-950 text-slate-300 dark:text-slate-400 pt-16 pb-12 border-t border-slate-800 dark:border-slate-900 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Top Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-800">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-800 dark:border-slate-900">
           
           {/* Brand Info & Mission */}
           <div className="lg:col-span-2 space-y-4">
@@ -30,13 +18,13 @@ export const Footer = ({ onSelectCategory, onSelectType }) => {
                 CROCBAG
               </span>
             </div>
-            <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
+            <p className="text-sm text-slate-400 dark:text-slate-400 leading-relaxed max-w-sm">
               Your premier destination for lightweight, comfortable Crocs clogs & stylish handcrafted everyday bags. Order effortlessly via WhatsApp with instant delivery confirmation.
             </p>
 
             {/* Official Social Media Links */}
             <div className="pt-2">
-              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
+              <h4 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">
                 Follow Us On Social Media
               </h4>
               <div className="flex items-center space-x-3">
@@ -46,7 +34,7 @@ export const Footer = ({ onSelectCategory, onSelectType }) => {
                   href="https://instagram.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-10 h-10 rounded-full bg-slate-800 hover:bg-gradient-to-tr hover:from-amber-500 hover:via-rose-500 hover:to-purple-600 text-slate-300 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm hover:scale-110"
+                  className="w-10 h-10 rounded-full bg-slate-800 dark:bg-slate-900 hover:bg-gradient-to-tr hover:from-amber-500 hover:via-rose-500 hover:to-purple-600 text-slate-300 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm hover:scale-110"
                   aria-label="Instagram"
                 >
                   <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
@@ -59,7 +47,7 @@ export const Footer = ({ onSelectCategory, onSelectType }) => {
                   href="https://facebook.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-10 h-10 rounded-full bg-slate-800 hover:bg-blue-600 text-slate-300 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm hover:scale-110"
+                  className="w-10 h-10 rounded-full bg-slate-800 dark:bg-slate-900 hover:bg-blue-600 text-slate-300 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm hover:scale-110"
                   aria-label="Facebook"
                 >
                   <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
@@ -72,7 +60,7 @@ export const Footer = ({ onSelectCategory, onSelectType }) => {
                   href="https://tiktok.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-cyan-400 flex items-center justify-center transition-all duration-300 shadow-sm hover:scale-110"
+                  className="w-10 h-10 rounded-full bg-slate-800 dark:bg-slate-900 hover:bg-slate-700 text-slate-300 hover:text-cyan-400 flex items-center justify-center transition-all duration-300 shadow-sm hover:scale-110"
                   aria-label="TikTok"
                 >
                   <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
@@ -85,7 +73,7 @@ export const Footer = ({ onSelectCategory, onSelectType }) => {
                   href="https://wa.me/50252506084"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-10 h-10 rounded-full bg-slate-800 hover:bg-emerald-500 text-slate-300 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm hover:scale-110"
+                  className="w-10 h-10 rounded-full bg-slate-800 dark:bg-slate-900 hover:bg-emerald-500 text-slate-300 hover:text-white flex items-center justify-center transition-all duration-300 shadow-sm hover:scale-110"
                   aria-label="WhatsApp Contact"
                   title="WhatsApp: +502 52506084"
                 >
@@ -165,12 +153,12 @@ export const Footer = ({ onSelectCategory, onSelectType }) => {
             <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4">
               Instant Order Line
             </h4>
-            <div className="bg-slate-800/80 rounded-2xl p-4 border border-slate-700 space-y-3">
+            <div className="bg-slate-800/80 dark:bg-slate-900/80 rounded-2xl p-4 border border-slate-700 dark:border-slate-800 space-y-3">
               <div className="flex items-center space-x-2 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
                 <span>Online & Ready</span>
               </div>
-              <p className="text-xs text-slate-300">
+              <p className="text-xs text-slate-300 dark:text-slate-400">
                 Have questions or need custom sizes? Contact our WhatsApp sales desk directly:
               </p>
               <a
@@ -186,8 +174,8 @@ export const Footer = ({ onSelectCategory, onSelectType }) => {
 
         </div>
 
-        {/* Newsletter & Bottom Bar */}
-        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+        {/* Bottom Bar */}
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400 dark:text-slate-500">
           <div>
             © {new Date().getFullYear()} CROCBAG Store. All rights reserved. Designed for ultra-fast WhatsApp checkout.
           </div>

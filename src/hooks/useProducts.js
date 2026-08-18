@@ -3,7 +3,7 @@ import { supabase } from '../supabaseClient';
 import { PRODUCTS as FALLBACK_PRODUCTS } from '../data/products';
 
 /**
- * Custom Hook to fetch real product data directly from Supabase
+ * Custom Hook to fetch product data directly from Supabase
  * Handles loading states, error logging, static image path normalization, and schema mapping.
  */
 export const useProducts = () => {
@@ -16,10 +16,11 @@ export const useProducts = () => {
       setLoading(true);
       setError(null);
 
-      // Query products table from Supabase
+      // Query products table from Supabase ordered by creation date
       const { data, error: queryError } = await supabase
         .from('products')
-        .select('*');
+        .select('*')
+        .order('created_at', { ascending: false });
 
       if (queryError) {
         console.error('Supabase Query Error fetching products:', queryError);
@@ -31,23 +32,31 @@ export const useProducts = () => {
         
         // Normalize product data for UI components
         const normalizedProducts = data.map((item, index) => {
-          // Process images array or single image_url string
+          // Process images array or single image URL string
           let rawImages = item.images || item.image_url || item.image;
           let imageList = [];
+
           if (Array.isArray(rawImages)) {
-            imageList = rawImages.map((img) =>
-              typeof img === 'string' && img.startsWith('/public/')
-                ? img.replace('/public/', '/')
-                : img
-            );
+            imageList = rawImages
+              .filter((img) => typeof img === 'string' && img.trim().length > 0)
+              .map((img) =>
+                img.trim().startsWith('/public/')
+                  ? img.trim().replace('/public/', '/')
+                  : img.trim()
+              );
           } else if (typeof rawImages === 'string' && rawImages.trim()) {
             const cleanUrl = rawImages.trim().startsWith('/public/')
               ? rawImages.trim().replace('/public/', '/')
               : rawImages.trim();
             imageList = [cleanUrl];
           }
+
           if (imageList.length === 0) {
-            imageList = ['/assets/crocs_classic_clog.png'];
+            imageList = [
+              item.type === 'Bags' || item.title?.toLowerCase().includes('bag') || item.title?.toLowerCase().includes('tote')
+                ? '/assets/tote_bag_modern.png'
+                : '/assets/crocs_classic_clog.png'
+            ];
           }
 
           // Process target_audience array or single string
@@ -70,7 +79,7 @@ export const useProducts = () => {
             }
           }
 
-          // Process sizes array
+          // Process sizes array directly from database column
           let sizes = item.sizes;
           if (!Array.isArray(sizes) || sizes.length === 0) {
             sizes = item.type === 'Crocs' || item.title?.toLowerCase().includes('croc') || item.title?.toLowerCase().includes('clog')
@@ -78,13 +87,13 @@ export const useProducts = () => {
               : ['Standard'];
           }
 
-          // Process colors array
+          // Process colors array directly from database column
           let colors = item.colors;
           if (!Array.isArray(colors) || colors.length === 0) {
             colors = ['Default'];
           }
 
-          // Process product variants
+          // Process product variants object
           let variants = item.product_variants || item.variants;
           if (!variants || typeof variants !== 'object') {
             variants = {
@@ -105,7 +114,9 @@ export const useProducts = () => {
             title: item.title || item.name || 'Untitled Product',
             slug: item.slug || (item.title || item.name || 'product').toLowerCase().replace(/\s+/g, '-'),
             price: parseFloat(item.price) || 0,
-            original_price: item.original_price ? parseFloat(item.original_price) : null,
+            original_price: item.original_price != null && !isNaN(parseFloat(item.original_price))
+              ? parseFloat(item.original_price)
+              : null,
             type: item.type || (item.title?.toLowerCase().includes('bag') ? 'Bags' : 'Crocs'),
             target_audience: targetAudience,
             categories: categories,
@@ -114,7 +125,7 @@ export const useProducts = () => {
             sizes: sizes,
             colors: colors,
             product_variants: variants,
-            is_featured: Boolean(item.is_featured ?? item.featured ?? true),
+            is_featured: Boolean(item.is_featured ?? item.featured ?? false),
             in_stock: Boolean(item.in_stock ?? true)
           };
         });

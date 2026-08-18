@@ -16,18 +16,19 @@ export const ProductModal = ({
   // Extract sizes and colors from product object
   useEffect(() => {
     if (product) {
-      // Default sizes (EU Shoe sizes preferred for Crocs)
       const availableSizes =
-        product.product_variants?.sizes ||
-        product.sizes ||
-        (product.type === 'Crocs'
-          ? ['EU 36', 'EU 37', 'EU 38', 'EU 39', 'EU 40', 'EU 41', 'EU 42', 'EU 43', 'EU 44']
-          : ['Standard']);
+        product.sizes && Array.isArray(product.sizes) && product.sizes.length > 0
+          ? product.sizes
+          : product.product_variants?.sizes ||
+            (product.type === 'Crocs'
+              ? ['EU 36', 'EU 37', 'EU 38', 'EU 39', 'EU 40', 'EU 41', 'EU 42', 'EU 43', 'EU 44']
+              : ['Standard']);
 
       const availableColors =
-        product.product_variants?.colors ||
-        product.colors ||
-        ['Default'];
+        product.colors && Array.isArray(product.colors) && product.colors.length > 0
+          ? product.colors
+          : product.product_variants?.colors ||
+            ['Default'];
 
       setSelectedSize(availableSizes[0] || '');
       setSelectedColor(availableColors[0] || 'Default');
@@ -40,30 +41,33 @@ export const ProductModal = ({
   if (!isOpen || !product) return null;
 
   const availableSizes =
-    product.product_variants?.sizes ||
-    product.sizes ||
-    (product.type === 'Crocs'
-      ? ['EU 36', 'EU 37', 'EU 38', 'EU 39', 'EU 40', 'EU 41', 'EU 42', 'EU 43', 'EU 44']
-      : ['Standard']);
+    product.sizes && Array.isArray(product.sizes) && product.sizes.length > 0
+      ? product.sizes
+      : product.product_variants?.sizes ||
+        (product.type === 'Crocs'
+          ? ['EU 36', 'EU 37', 'EU 38', 'EU 39', 'EU 40', 'EU 41', 'EU 42', 'EU 43', 'EU 44']
+          : ['Standard']);
 
   const availableColors =
-    product.product_variants?.colors ||
-    product.colors ||
-    ['Default'];
+    product.colors && Array.isArray(product.colors) && product.colors.length > 0
+      ? product.colors
+      : product.product_variants?.colors ||
+        ['Default'];
 
-  // Robust image fallback path resolution (strips unnecessary /public prefix)
   const getImageUrl = () => {
     const rawImage = product.images?.[0] || product.image_url || product.image;
     if (!rawImage || imageError) {
       return null;
     }
-    if (rawImage.startsWith('/public/')) {
+    if (typeof rawImage === 'string' && rawImage.startsWith('/public/')) {
       return rawImage.replace('/public/', '/');
     }
     return rawImage;
   };
 
   const imageUrl = getImageUrl();
+  const hasDiscount = product.original_price && product.original_price > product.price;
+  const savingsAmount = hasDiscount ? (product.original_price - product.price).toFixed(2) : null;
   const totalPrice = (product.price * quantity).toFixed(2);
 
   const handleDecreaseQuantity = () => {
@@ -110,15 +114,15 @@ export const ProductModal = ({
       />
 
       {/* Modal Dialog Card */}
-      <div className="relative bg-white w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden border border-slate-100 flex flex-col max-h-[90vh] z-10 animate-in fade-in zoom-in duration-200">
+      <div className="relative bg-white dark:bg-slate-900 w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-800 flex flex-col max-h-[90vh] z-10 animate-in fade-in zoom-in duration-200 transition-colors duration-300">
         
         {/* Header */}
-        <div className="p-4 sm:p-6 bg-slate-900 text-white flex items-center justify-between">
+        <div className="p-4 sm:p-6 bg-slate-900 dark:bg-slate-950 text-white flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <span className="text-xl">{product.type === 'Crocs' ? '👟' : '👜'}</span>
             <div>
               <span className="text-[10px] font-bold uppercase tracking-widest text-pink-400">
-                {product.type === 'Crocs' ? 'Crocs Shoe Options' : 'Bag Selection'}
+                {product.type === 'Crocs' ? 'Footwear Selection' : 'Bag Selection'}
               </span>
               <h3 className="font-heading font-bold text-base sm:text-lg text-white line-clamp-1">
                 {product.title}
@@ -141,8 +145,8 @@ export const ProductModal = ({
           {/* Product Image & Main Details */}
           <div className="flex flex-col sm:flex-row gap-5 items-center sm:items-start">
             
-            {/* Image Container with Fallback handling */}
-            <div className="w-40 h-40 sm:w-44 sm:h-44 bg-slate-50 rounded-2xl p-4 border border-slate-200/80 flex items-center justify-center shrink-0 relative overflow-hidden">
+            {/* Image Container */}
+            <div className="w-40 h-40 sm:w-44 sm:h-44 bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-700 flex items-center justify-center shrink-0 relative overflow-hidden">
               {imageUrl ? (
                 <img
                   src={imageUrl}
@@ -151,13 +155,12 @@ export const ProductModal = ({
                   className="w-full h-full object-contain drop-shadow-md"
                 />
               ) : (
-                /* Dynamic SVG Fallback graphic */
-                <div className="flex flex-col items-center justify-center text-slate-400 text-center space-y-2">
+                <div className="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 text-center space-y-2">
                   <svg className="w-12 h-12 stroke-current stroke-1" fill="none" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                    {product.type === 'Crocs' ? 'Crocs Image' : 'Bag Image'}
+                    {product.type === 'Crocs' ? 'Crocs Product' : 'Bag Product'}
                   </span>
                 </div>
               )}
@@ -169,34 +172,34 @@ export const ProductModal = ({
                 {product.target_audience?.map((aud) => (
                   <span
                     key={aud}
-                    className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-pink-100 text-pink-700"
+                    className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-pink-100 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300"
                   >
                     {aud}
                   </span>
                 ))}
                 {product.categories?.slice(0, 2).map((cat) => (
-                  <span key={cat} className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                  <span key={cat} className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                     {cat}
                   </span>
                 ))}
               </div>
 
-              <p className="text-xs text-slate-500 leading-relaxed line-clamp-3">
-                {product.description || 'High comfort footwear crafted with premium durable lightweight materials.'}
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">
+                {product.description || 'High comfort product crafted with premium durable lightweight materials.'}
               </p>
 
               <div className="pt-1 flex items-baseline justify-center sm:justify-start space-x-2">
-                <span className="font-heading font-extrabold text-2xl text-slate-900">
+                <span className="font-heading font-extrabold text-2xl text-slate-900 dark:text-white">
                   {CURRENCY_SYMBOL}{product.price.toFixed(2)}
                 </span>
-                {product.original_price && (
-                  <span className="text-sm text-slate-400 line-through">
+                {hasDiscount && (
+                  <span className="text-sm text-slate-400 dark:text-slate-500 line-through">
                     {CURRENCY_SYMBOL}{product.original_price.toFixed(2)}
                   </span>
                 )}
-                {product.original_price && (
-                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-                    Save {CURRENCY_SYMBOL}{(product.original_price - product.price).toFixed(2)}
+                {hasDiscount && (
+                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full">
+                    Save {CURRENCY_SYMBOL}{savingsAmount}
                   </span>
                 )}
               </div>
@@ -204,15 +207,15 @@ export const ProductModal = ({
 
           </div>
 
-          {/* 1. Crocs Shoe Size Selector Chips */}
-          <div className="space-y-2.5 pt-2 border-t border-slate-100">
+          {/* 1. Dynamic Size Selector Chips */}
+          <div className="space-y-2.5 pt-2 border-t border-slate-100 dark:border-slate-800">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center space-x-1.5">
+              <label className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center space-x-1.5">
                 <span>📏</span>
-                <span>Select Shoe Size ({product.type === 'Crocs' ? 'EU Sizes' : 'Size'}):</span>
+                <span>Select Size ({product.type === 'Crocs' ? 'EU Shoe Sizes' : 'Size Options'}):</span>
               </label>
               {selectedSize && (
-                <span className="text-xs font-bold text-pink-600 bg-pink-50 px-2.5 py-0.5 rounded-full">
+                <span className="text-xs font-bold text-pink-600 dark:text-pink-400 bg-pink-50 dark:bg-pink-950/60 px-2.5 py-0.5 rounded-full">
                   Selected: {selectedSize}
                 </span>
               )}
@@ -228,8 +231,8 @@ export const ProductModal = ({
                     onClick={() => setSelectedSize(size)}
                     className={`py-2.5 px-3 rounded-2xl text-xs font-bold transition-all duration-200 border text-center ${
                       isSelected
-                        ? 'bg-slate-900 text-white border-slate-900 shadow-md scale-105 ring-2 ring-pink-500/50'
-                        : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                        ? 'bg-slate-900 dark:bg-pink-600 text-white border-slate-900 dark:border-pink-600 shadow-md scale-105 ring-2 ring-pink-500/50'
+                        : 'bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
                     }`}
                   >
                     {size}
@@ -239,10 +242,10 @@ export const ProductModal = ({
             </div>
           </div>
 
-          {/* 2. Color Selection (if multiple colors available) */}
-          {availableColors.length > 1 && (
-            <div className="space-y-2 pt-2 border-t border-slate-100">
-              <label className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center space-x-1.5">
+          {/* 2. Dynamic Color Selector */}
+          {availableColors.length > 0 && availableColors[0] !== 'Default' && (
+            <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <label className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center space-x-1.5">
                 <span>🎨</span>
                 <span>Select Color:</span>
               </label>
@@ -257,7 +260,7 @@ export const ProductModal = ({
                       className={`py-1.5 px-3 rounded-xl text-xs font-semibold border transition-all ${
                         isSelected
                           ? 'bg-pink-600 text-white border-pink-600 shadow-sm'
-                          : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                          : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
                       }`}
                     >
                       {color}
@@ -269,28 +272,28 @@ export const ProductModal = ({
           )}
 
           {/* 3. Quantity Counter */}
-          <div className="space-y-2 pt-2 border-t border-slate-100">
+          <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center space-x-1.5">
+              <label className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center space-x-1.5">
                 <span>🔢</span>
-                <span>Quantity (Pairs):</span>
+                <span>Quantity:</span>
               </label>
-              <span className="text-xs text-slate-500 font-medium">
-                In Stock: <strong className="text-emerald-600">Available</strong>
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                Stock Status: <strong className="text-emerald-600 dark:text-emerald-400">{product.in_stock ? 'In Stock' : 'Out of Stock'}</strong>
               </span>
             </div>
 
-            <div className="flex items-center justify-between bg-slate-50 p-2 rounded-2xl border border-slate-200">
-              <span className="text-xs text-slate-600 font-semibold px-2">
-                Select Pair Count:
+            <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-800/60 p-2 rounded-2xl border border-slate-200 dark:border-slate-700">
+              <span className="text-xs text-slate-600 dark:text-slate-300 font-semibold px-2">
+                Item Quantity:
               </span>
 
-              <div className="flex items-center space-x-3 bg-white border border-slate-200 rounded-xl p-1 shadow-2xs">
+              <div className="flex items-center space-x-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-1 shadow-2xs">
                 <button
                   type="button"
                   onClick={handleDecreaseQuantity}
                   disabled={quantity <= 1}
-                  className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-40 text-slate-800 font-extrabold flex items-center justify-center text-sm transition-colors"
+                  className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-40 text-slate-800 dark:text-slate-200 font-extrabold flex items-center justify-center text-sm transition-colors"
                 >
                   -
                 </button>
@@ -305,12 +308,12 @@ export const ProductModal = ({
                       setQuantity(val);
                     }
                   }}
-                  className="w-12 text-center text-sm font-extrabold text-slate-900 focus:outline-none"
+                  className="w-12 text-center text-sm font-extrabold text-slate-900 dark:text-white bg-transparent focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={handleIncreaseQuantity}
-                  className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold flex items-center justify-center text-sm transition-colors"
+                  className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-extrabold flex items-center justify-center text-sm transition-colors"
                 >
                   +
                 </button>
@@ -321,12 +324,12 @@ export const ProductModal = ({
         </div>
 
         {/* Modal Footer with Actions & Dynamic Total */}
-        <div className="p-4 sm:p-6 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="p-4 sm:p-6 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-center sm:text-left">
-            <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block">
+            <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-slate-500 block">
               Subtotal Price
             </span>
-            <span className="font-heading font-extrabold text-2xl text-pink-600">
+            <span className="font-heading font-extrabold text-2xl text-pink-600 dark:text-pink-400">
               {CURRENCY_SYMBOL}{totalPrice}
             </span>
           </div>
@@ -337,7 +340,7 @@ export const ProductModal = ({
             className={`w-full sm:w-auto px-8 py-3.5 rounded-2xl font-bold text-sm text-white shadow-lg transition-all duration-200 flex items-center justify-center space-x-2 active:scale-95 ${
               isAdded
                 ? 'bg-emerald-600 shadow-emerald-500/20'
-                : 'bg-slate-900 hover:bg-pink-600 shadow-slate-900/20'
+                : 'bg-slate-900 dark:bg-pink-600 hover:bg-pink-600 dark:hover:bg-pink-500 shadow-slate-900/20'
             }`}
           >
             {isAdded ? (
@@ -350,7 +353,7 @@ export const ProductModal = ({
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
-                <span>Add {quantity} {quantity === 1 ? 'Pair' : 'Pairs'} to Cart</span>
+                <span>Add {quantity} {quantity === 1 ? 'Item' : 'Items'} to Cart</span>
               </>
             )}
           </button>

@@ -11,24 +11,42 @@
   --whatsapp-green-hover: #1FA651;
 }
 
+/* Global 300ms smooth theme transition */
+html {
+  transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1), color 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 body {
   font-family: var(--font-body);
   background-color: #F8FAFC;
   color: #0F172A;
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
+  transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1), color 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark Mode Global Overrides */
+html.dark body {
+  background-color: #0B132B;
+  color: #F1F5F9;
 }
 
 h1, h2, h3, h4, h5, h6, .font-heading {
   font-family: var(--font-heading);
 }
 
-/* Glassmorphism background utilities */
+/* Glassmorphism background utilities with Dark Mode support */
 .glass-panel {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(241, 245, 249, 0.8);
+  transition: background-color 300ms ease, border-color 300ms ease;
+}
+
+html.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(30, 41, 59, 0.8);
 }
 
 .glass-nav {
@@ -36,6 +54,12 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  transition: background-color 300ms ease, border-color 300ms ease;
+}
+
+html.dark .glass-nav {
+  background: rgba(15, 23, 42, 0.92);
+  border-bottom-color: rgba(30, 41, 59, 0.8);
 }
 
 /* Custom Category Pill Badges */
@@ -44,17 +68,32 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   color: #BE185D;
   border: 1px solid #FBCFE8;
 }
+html.dark .badge-women {
+  background-color: rgba(190, 24, 93, 0.2);
+  color: #F472B6;
+  border-color: rgba(244, 114, 182, 0.3);
+}
 
 .badge-men {
   background-color: #E0F2FE;
   color: #0369A1;
   border: 1px solid #BAE6FD;
 }
+html.dark .badge-men {
+  background-color: rgba(3, 105, 161, 0.2);
+  color: #38BDF8;
+  border-color: rgba(56, 189, 248, 0.3);
+}
 
 .badge-kids {
   background-color: #FEF3C7;
   color: #B45309;
   border: 1px solid #FDE68A;
+}
+html.dark .badge-kids {
+  background-color: rgba(180, 83, 9, 0.2);
+  color: #FBBF24;
+  border-color: rgba(251, 191, 36, 0.3);
 }
 
 /* Custom scrollbars */
@@ -65,9 +104,15 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 ::-webkit-scrollbar-track {
   background: #F1F5F9;
 }
+html.dark ::-webkit-scrollbar-track {
+  background: #0F172A;
+}
 ::-webkit-scrollbar-thumb {
   background: #CBD5E1;
   border-radius: 9999px;
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
@@ -83,6 +128,18 @@ h1, h2, h3, h4, h5, h6, .font-heading {
 
 /* Mobile drawer backdrop transition */
 .drawer-backdrop {
-  background-color: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(4px);
+  background-color: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* Product Card Uniform Image Container */
+.product-card-img-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

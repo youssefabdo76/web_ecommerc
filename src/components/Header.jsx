@@ -8,7 +8,9 @@ export const Header = ({
   selectedCategory = 'ALL',
   onSelectCategory,
   selectedType = 'ALL',
-  onSelectType
+  onSelectType,
+  darkMode = false,
+  onToggleDarkMode
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -29,31 +31,31 @@ export const Header = ({
   return (
     <header className="sticky top-0 z-40 w-full glass-nav shadow-sm transition-all duration-300">
       {/* Top Banner Announcement */}
-      <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white text-xs font-semibold py-1.5 px-4 text-center tracking-wide flex items-center justify-center space-x-2">
+      <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white text-[11px] sm:text-xs font-semibold py-1.5 px-4 text-center tracking-wide flex items-center justify-center space-x-2">
         <span>✨ Summer Special Sale! Free Delivery & Fast WhatsApp Ordering!</span>
         <span className="hidden md:inline-block bg-white/20 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">Direct Checkout</span>
       </div>
 
       {/* Main Navigation Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20 gap-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-20 gap-2 sm:gap-4">
           
           {/* Brand Logo */}
-          <div className="flex items-center space-x-3 shrink-0">
+          <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
             <button 
               onClick={() => { handleAudienceClick('ALL'); handleTypeClick('ALL'); }}
-              className="flex items-center space-x-2.5 group text-left focus:outline-none"
+              className="flex items-center space-x-2 group text-left focus:outline-none"
             >
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-pink-500 via-rose-500 to-amber-400 p-0.5 shadow-md group-hover:scale-105 transition-transform duration-200">
-                <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center text-pink-600 font-bold text-xl">
+              <div className="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-pink-500 via-rose-500 to-amber-400 p-0.5 shadow-md group-hover:scale-105 transition-transform duration-200 flex items-center justify-center shrink-0">
+                <div className="w-full h-full bg-white dark:bg-slate-900 rounded-[10px] sm:rounded-[14px] flex items-center justify-center text-pink-600 text-base sm:text-xl">
                   👟
                 </div>
               </div>
               <div>
-                <span className="font-heading font-extrabold text-xl sm:text-2xl tracking-tight bg-gradient-to-r from-gray-900 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
+                <span className="font-heading font-extrabold text-lg sm:text-2xl tracking-tight bg-gradient-to-r from-gray-900 via-pink-600 to-indigo-600 dark:from-white dark:via-pink-400 dark:to-indigo-400 bg-clip-text text-transparent">
                   CROCBAG
                 </span>
-                <span className="block text-[10px] font-semibold tracking-wider text-pink-600 uppercase -mt-1">
+                <span className="block text-[9px] sm:text-[10px] font-semibold tracking-wider text-pink-600 dark:text-pink-400 uppercase -mt-1">
                   Crocs & Bag Store
                 </span>
               </div>
@@ -68,7 +70,7 @@ export const Header = ({
                 placeholder="Search Crocs, Tote Bags, Crossbody, Clogs..."
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 text-sm bg-slate-100/80 border border-slate-200 rounded-full focus:bg-white focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500 transition-all duration-200 shadow-inner"
+                className="w-full pl-10 pr-4 py-2 text-sm bg-slate-100/80 dark:bg-slate-800/80 dark:text-slate-100 dark:border-slate-700 border border-slate-200 rounded-full focus:bg-white dark:focus:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500 transition-all duration-300 shadow-inner"
               />
               <svg 
                 className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" 
@@ -81,7 +83,7 @@ export const Header = ({
               {searchQuery && (
                 <button
                   onClick={() => onSearchChange('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs bg-slate-200 rounded-full w-4 h-4 flex items-center justify-center"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs bg-slate-200 dark:bg-slate-700 rounded-full w-4 h-4 flex items-center justify-center"
                 >
                   ✕
                 </button>
@@ -90,15 +92,15 @@ export const Header = ({
           </div>
 
           {/* Right Action Icons & Social Links */}
-          <div className="flex items-center space-x-2 sm:space-x-4">
+          <div className="flex items-center space-x-1.5 sm:space-x-3">
             
             {/* Desktop Social Quick Links */}
-            <div className="hidden lg:flex items-center space-x-2 border-r border-slate-200 pr-4 mr-1 text-slate-500">
+            <div className="hidden lg:flex items-center space-x-2 border-r border-slate-200 dark:border-slate-800 pr-3 mr-1 text-slate-500 dark:text-slate-400">
               <a 
                 href="https://instagram.com" 
                 target="_blank" 
                 rel="noreferrer" 
-                className="p-1.5 rounded-full hover:bg-pink-50 hover:text-pink-600 transition-colors"
+                className="p-1.5 rounded-full hover:bg-pink-50 dark:hover:bg-slate-800 hover:text-pink-600 transition-colors flex items-center justify-center"
                 title="Instagram"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -109,7 +111,7 @@ export const Header = ({
                 href="https://wa.me/50252506084" 
                 target="_blank" 
                 rel="noreferrer" 
-                className="p-1.5 rounded-full hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                className="p-1.5 rounded-full hover:bg-emerald-50 dark:hover:bg-slate-800 hover:text-emerald-600 transition-colors flex items-center justify-center"
                 title="WhatsApp Direct Contact"
               >
                 <svg className="w-4 h-4 fill-current text-emerald-500" viewBox="0 0 24 24">
@@ -118,36 +120,57 @@ export const Header = ({
               </a>
             </div>
 
-            {/* Cart Drawer Trigger Button */}
+            {/* REQUIREMENT 4: Animated Dark Mode Toggle Button */}
+            <button
+              type="button"
+              onClick={onToggleDarkMode}
+              className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-amber-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all duration-300 flex items-center justify-center shadow-xs active:scale-90"
+              aria-label="Toggle Dark Mode"
+              title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              {darkMode ? (
+                /* Animated Sun Icon for Dark Mode */
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 transform transition-transform duration-300 rotate-0 hover:rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                /* Animated Moon Icon for Light Mode */
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-slate-700 transform transition-transform duration-300 hover:-rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+            </button>
+
+            {/* REQUIREMENT 2: Scaled & Perfectly Aligned Cart Button */}
             <button
               onClick={onOpenCart}
-              className="relative flex items-center space-x-2 bg-gradient-to-r from-pink-500 to-rose-600 text-white px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-full shadow-md hover:from-pink-600 hover:to-rose-700 active:scale-95 transition-all duration-200 group"
+              className="relative flex items-center space-x-1.5 sm:space-x-2 bg-gradient-to-r from-pink-500 to-rose-600 text-white px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-full shadow-md hover:from-pink-600 hover:to-rose-700 active:scale-95 transition-all duration-200 group"
               aria-label="Shopping Cart"
             >
-              <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
               <span className="font-medium text-xs sm:text-sm hidden sm:inline-block">Cart</span>
               
               {/* Badge Counter */}
               {cartCount > 0 ? (
-                <span className="bg-white text-pink-600 font-extrabold text-xs w-5 h-5 rounded-full flex items-center justify-center shadow-sm animate-bounce">
+                <span className="bg-white text-pink-600 font-extrabold text-[10px] sm:text-xs w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center shadow-sm animate-bounce">
                   {cartCount}
                 </span>
               ) : (
-                <span className="bg-white/20 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                <span className="bg-white/20 text-white text-[10px] sm:text-xs w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center">
                   0
                 </span>
               )}
             </button>
 
-            {/* Mobile Menu Hamburger Button */}
+            {/* REQUIREMENT 2 & 3: Mobile Hamburger Button */}
             <button
               onClick={toggleMobileMenu}
-              className="md:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 focus:outline-none"
+              className="md:hidden p-1.5 sm:p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center justify-center focus:outline-none"
               aria-label="Toggle Mobile Menu"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {isMobileMenuOpen ? (
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                 ) : (
@@ -159,17 +182,17 @@ export const Header = ({
         </div>
 
         {/* Mobile Search Bar */}
-        <div className="md:hidden pb-3">
+        <div className="md:hidden pb-2.5">
           <div className="relative w-full">
             <input
               type="text"
               placeholder="Search Crocs, Bags..."
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-xs bg-slate-100 border border-slate-200 rounded-full focus:bg-white focus:outline-none focus:ring-2 focus:ring-pink-500/50"
+              className="w-full pl-8 pr-4 py-1.5 text-xs bg-slate-100/90 dark:bg-slate-800/90 dark:text-slate-100 border border-slate-200 dark:border-slate-700 rounded-full focus:bg-white dark:focus:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-pink-500/50"
             />
             <svg 
-              className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" 
+              className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" 
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"
@@ -180,38 +203,55 @@ export const Header = ({
         </div>
       </div>
 
-      {/* Mobile Slide-Out Drawer Navigation */}
+      {/* REQUIREMENT 3: Fixed Mobile Navigation Drawer */}
       {isMobileMenuOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
-          {/* Backdrop */}
+          {/* Dimmed Backdrop */}
           <div 
-            className="fixed inset-0 drawer-backdrop transition-opacity" 
+            className="fixed inset-0 drawer-backdrop transition-opacity duration-300" 
             onClick={() => setIsMobileMenuOpen(false)} 
           />
 
-          {/* Drawer Container */}
-          <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white shadow-2xl pt-5 pb-4">
-            <div className="px-5 flex items-center justify-between border-b border-slate-100 pb-4">
+          {/* Drawer Container - Full Height Slide-over */}
+          <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white dark:bg-slate-900 shadow-2xl z-10 animate-in slide-in-from-right duration-300">
+            
+            {/* Drawer Header */}
+            <div className="px-5 py-4 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center space-x-2">
                 <span className="text-xl">👟</span>
-                <span className="font-heading font-extrabold text-lg bg-gradient-to-r from-gray-900 to-pink-600 bg-clip-text text-transparent">
-                  CROCBAG
+                <span className="font-heading font-extrabold text-lg bg-gradient-to-r from-gray-900 via-pink-600 to-indigo-600 dark:from-white dark:via-pink-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                  CROCBAG Menu
                 </span>
               </div>
               <button 
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="p-1 rounded-full text-slate-400 hover:bg-slate-100"
+                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center transition-colors"
+                aria-label="Close menu"
               >
                 ✕
               </button>
             </div>
 
-            <div className="mt-4 flex-1 px-4 overflow-y-auto space-y-6">
+            {/* Drawer Content */}
+            <div className="flex-1 px-4 py-5 overflow-y-auto space-y-6">
               
+              {/* Theme Selector inside drawer */}
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200/80 dark:border-slate-700 flex items-center justify-between">
+                <div className="flex items-center space-x-2 text-xs font-bold text-slate-800 dark:text-slate-200">
+                  <span>{darkMode ? '🌙 Dark Theme' : '☀️ Light Theme'}</span>
+                </div>
+                <button
+                  onClick={onToggleDarkMode}
+                  className="px-3 py-1.5 rounded-xl bg-pink-500 text-white text-xs font-bold shadow-xs active:scale-95 transition-all"
+                >
+                  Switch
+                </button>
+              </div>
+
               {/* Product Types Filter */}
               <div>
-                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                  Product Types
+                <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2.5">
+                  Product Collections
                 </h3>
                 <div className="space-y-1">
                   {[
@@ -222,10 +262,10 @@ export const Header = ({
                     <button
                       key={t.id}
                       onClick={() => handleTypeClick(t.id)}
-                      className={`w-full text-left px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+                      className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
                         selectedType === t.id 
-                          ? 'bg-pink-50 text-pink-600 font-semibold' 
-                          : 'text-slate-700 hover:bg-slate-50'
+                          ? 'bg-pink-500 text-white shadow-md' 
+                          : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       {t.label}
@@ -236,7 +276,7 @@ export const Header = ({
 
               {/* Target Audience Categories */}
               <div>
-                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2.5">
                   Shop by Audience
                 </h3>
                 <div className="space-y-1">
@@ -249,10 +289,10 @@ export const Header = ({
                     <button
                       key={cat.id}
                       onClick={() => handleAudienceClick(cat.id)}
-                      className={`w-full text-left px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+                      className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all ${
                         selectedCategory === cat.id 
-                          ? 'bg-pink-50 text-pink-600 font-semibold' 
-                          : 'text-slate-700 hover:bg-slate-50'
+                          ? 'bg-pink-500 text-white shadow-md' 
+                          : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       {cat.label}
@@ -261,19 +301,19 @@ export const Header = ({
                 </div>
               </div>
 
-              {/* Quick Contact & Socials */}
-              <div className="pt-4 border-t border-slate-100">
-                <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
-                  Direct Contact & Socials
+              {/* Quick Contact & WhatsApp */}
+              <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
+                <h3 className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">
+                  Direct WhatsApp Support
                 </h3>
                 <a
                   href="https://wa.me/50252506084"
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center space-x-3 w-full p-2.5 rounded-xl bg-emerald-50 text-emerald-700 font-medium text-sm hover:bg-emerald-100 transition-colors mb-2"
+                  className="flex items-center space-x-3 w-full p-3 rounded-2xl bg-emerald-500 text-white font-bold text-xs hover:bg-emerald-600 shadow-md transition-all"
                 >
-                  <span className="w-7 h-7 bg-emerald-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
-                    WA
+                  <span className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center text-xs">
+                    💬
                   </span>
                   <span>WhatsApp: +502 52506084</span>
                 </a>
