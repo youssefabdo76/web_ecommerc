@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CROCBAG | Live Preview - Crocs & Bags Store</title>
+  <meta name="description" content="Shop modern Crocs clogs, platform slides, and handcrafted tote bags for Women, Men, and Kids. Order instantly via WhatsApp.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            heading: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- React & Babel CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; color: #0F172A; }
+    h1, h2, h3, h4, .font-heading { font-family: 'Outfit', sans-serif; }
+    .glass-nav { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(226, 232, 240, 0.8); }
+    .badge-women { background-color: #FCE7F3; color: #BE185D; border: 1px solid #FBCFE8; }
+    .badge-men { background-color: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD; }
+    .badge-kids { background-color: #FEF3C7; color: #B45309; border: 1px solid #FDE68A; }
+    .whatsapp-glow { box-shadow: 0 4px 20px rgba(37, 211, 102, 0.35); }
+    .whatsapp-glow:hover { box-shadow: 0 6px 25px rgba(37, 211, 102, 0.55); }
+    .drawer-backdrop { background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useMemo } = React;
+
+    // --- PRODUCTS DATA ---
+    const PRODUCTS = [
+      {
+        id: "prod-croc-001",
+        title: "Classic Pastel Charm Clog",
+        price: 49.99,
+        original_price: 59.99,
+        type: "Crocs",
+        target_audience: ["Women", "Kids"],
+        categories: ["Clogs", "Casual"],
+        description: "Ultra-lightweight, water-friendly classic clogs decorated with colorful charms.",
+        images: ["/public/assets/crocs_classic_clog.png"],
+        product_variants: { sizes: ["US 5 / W", "US 6 / W", "US 7 / W", "Kids M4/W6"] },
+        rating: 4.9, review_count: 128
+      },
+      {
+        id: "prod-croc-002",
+        title: "Chunky Mint Platform Clog",
+        price: 64.99,
+        original_price: 74.99,
+        type: "Crocs",
+        target_audience: ["Women"],
+        categories: ["Platform", "Trending"],
+        description: "Elevate your style with bold 2.4-inch platform soles.",
+        images: ["/public/assets/crocs_platform_clog.png"],
+        product_variants: { sizes: ["US 6", "US 7", "US 8"] },
+        rating: 4.8, review_count: 94
+      },
+      {
+        id: "prod-bag-001",
+        title: "Aesthetic Terracotta Canvas Tote",
+        price: 38.50,
+        original_price: 45.00,
+        type: "Bags",
+        target_audience: ["Women", "Men"],
+        categories: ["Totes", "Everyday"],
+        description: "Heavy-duty eco-friendly canvas tote bag with reinforced vegan leather handles.",
+        images: ["/public/assets/tote_bag_modern.png"],
+        product_variants: { sizes: ["Standard (15L)", "Large (22L)"] },
+        rating: 4.9, review_count: 156
+      },
+      {
+        id: "prod-bag-002",
+        title: "Lavender Quilted Mini Crossbody",
+        price: 42.00,
+        original_price: 52.00,
+        type: "Bags",
+        target_audience: ["Women", "Kids"],
+        categories: ["Crossbody", "Evening"],
+        description: "Chic luxury quilted mini handbag with detachable gold-tone chain strap.",
+        images: ["/public/assets/crossbody_mini_bag.png"],
+        product_variants: { sizes: ["One Size"] },
+        rating: 4.7, review_count: 82
+      },
+      {
+        id: "prod-croc-003",
+        title: "All-Terrain Adventure Clog",
+        price: 59.99,
+        original_price: 69.99,
+        type: "Crocs",
+        target_audience: ["Men", "Women"],
+        categories: ["Outdoor", "Clogs"],
+        description: "Rugged lug outsoles for increased traction and support.",
+        images: ["/public/assets/crocs_platform_clog.png"],
+        product_variants: { sizes: ["US 8 / M", "US 9 / M", "US 10 / M"] },
+        rating: 4.9, review_count: 210
+      },
+      {
+        id: "prod-croc-004",
+        title: "Junior Rainbow Glow Slide",
+        price: 32.99,
+        original_price: 39.99,
+        type: "Crocs",
+        target_audience: ["Kids"],
+        categories: ["Slides", "Kids Special"],
+        description: "Fun, vibrant slide sandals designed for active kids.",
+        images: ["/public/assets/crocs_classic_clog.png"],
+        product_variants: { sizes: ["Kids C10", "Kids C11", "Kids C12"] },
+        rating: 4.8, review_count: 73
+      }
+    ];
+
+    // --- WHATSAPP FORMATTER ---
+    const formatWhatsAppMessage = (items, customer, total) => {
+      let msg = `🛒 *NEW ORDER - CROCBAG STORE*\n`;
+      msg += `-------------------------------------------\n`;
+      items.forEach((item, idx) => {
+        msg += `${idx + 1}. *${item.title}* [${item.target_audience.join(', ')}]\n`;
+        if (item.selected_variant) msg += `   🔹 Variant: ${item.selected_variant}\n`;
+        msg += `   🔹 Qty: ${item.quantity} x $${item.price.toFixed(2)} = *$${(item.quantity * item.price).toFixed(2)}*\n\n`;
+      });
+      msg += `-------------------------------------------\n`;
+      msg += `💰 *TOTAL ORDER AMOUNT: $${total.toFixed(2)}*\n`;
+      msg += `-------------------------------------------\n`;
+      if (customer.name) msg += `👤 Name: ${customer.name}\n`;
+      if (customer.address) msg += `📍 Address: ${customer.address}\n`;
+      if (customer.notes) msg += `📝 Notes: ${customer.notes}\n`;
+      msg += `\nThank you!`;
+      return msg;
+    };
+
+    // --- HEADER COMPONENT ---
+    const Header = ({ cartCount, onOpenCart, searchQuery, onSearchChange, selectedCategory, onSelectCategory, selectedType, onSelectType }) => {
+      return (
+        <header className="sticky top-0 z-40 w-full glass-nav shadow-sm">
+          <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white text-xs font-semibold py-1.5 px-4 text-center">
+            ✨ Summer Sale! Direct WhatsApp Order Desk: +502 52506084
+          </div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16 sm:h-20 gap-4">
+              <div className="flex items-center space-x-3 cursor-pointer" onClick={() => { onSelectCategory('ALL'); onSelectType('ALL'); }}>
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-500 to-amber-400 p-0.5 shadow-md flex items-center justify-center text-white text-xl">
+                  👟
+                </div>
+                <div>
+                  <span className="font-heading font-extrabold text-xl sm:text-2xl bg-gradient-to-r from-gray-900 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
+                    CROCBAG
+                  </span>
+                  <span className="block text-[10px] font-semibold tracking-wider text-pink-600 uppercase -mt-1">Crocs & Bags</span>
+                </div>
+              </div>
+
+              <div className="hidden md:flex flex-1 max-w-md mx-4">
+                <input
+                  type="text"
+                  placeholder="Search Crocs, Bags, Clogs..."
+                  value={searchQuery}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  className="w-full px-4 py-2 text-xs bg-slate-100 border border-slate-200 rounded-full focus:bg-white focus:outline-none focus:ring-2 focus:ring-pink-500"
+                />
+              </div>
+
+              <div className="flex items-center space-x-3">
+                <a href="https://wa.me/50252506084" target="_blank" rel="noreferrer" className="hidden sm:flex items-center space-x-1 text-xs text-emerald-600 font-semibold bg-emerald-50 px-3 py-1.5 rounded-full hover:bg-emerald-100">
+                  <span>💬 WhatsApp</span>
+                </a>
+                <button
+                  onClick={onOpenCart}
+                  className="flex items-center space-x-2 bg-gradient-to-r from-pink-500 to-rose-600 text-white px-4 py-2 rounded-full shadow-md hover:from-pink-600 hover:to-rose-700 active:scale-95 transition-all"
+                >
+                  <span className="font-medium text-xs">Cart</span>
+                  <span className="bg-white text-pink-600 font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+      );
+    };
+
+    // --- MAIN APP ---
+    const App = () => {
+      const [cart, setCart] = useState([]);
+      const [searchQuery, setSearchQuery] = useState('');
+      const [selectedCategory, setSelectedCategory] = useState('ALL');
+      const [selectedType, setSelectedType] = useState('ALL');
+      const [isCartOpen, setIsCartOpen] = useState(false);
+      const [custName, setCustName] = useState('');
+      const [custAddr, setCustAddr] = useState('');
+      const [custNotes, setCustNotes] = useState('');
+
+      const handleAddToCart = (item) => {
+        setCart((prev) => {
+          const idx = prev.findIndex((i) => i.id === item.id);
+          if (idx > -1) {
+            const copy = [...prev];
+            copy[idx].quantity += 1;
+            return copy;
+          }
+          return [...prev, { ...item, quantity: 1, selected_variant: item.product_variants?.sizes?.[0] || '' }];
+        });
+      };
+
+      const handleQty = (id, delta) => {
+        setCart((prev) =>
+          prev.map((i) => (i.id === id ? { ...i, quantity: i.quantity + delta } : i)).filter((i) => i.quantity > 0)
+        );
+      };
+
+      const filtered = useMemo(() => {
+        return PRODUCTS.filter((p) => {
+          const matchAud = selectedCategory === 'ALL' || p.target_audience.includes(selectedCategory);
+          const matchType = selectedType === 'ALL' || p.type === selectedType;
+          const matchSearch = !searchQuery || p.title.toLowerCase().includes(searchQuery.toLowerCase());
+          return matchAud && matchType && matchSearch;
+        });
+      }, [selectedCategory, selectedType, searchQuery]);
+
+      const totalAmount = cart.reduce((acc, i) => acc + i.price * i.quantity, 0);
+
+      const triggerWhatsApp = () => {
+        const text = formatWhatsAppMessage(cart, { name: custName, address: custAddr, notes: custNotes }, totalAmount);
+        window.open(`https://wa.me/50252506084?text=${encodeURIComponent(text)}`, '_blank');
+      };
+
+      return (
+        <div className="min-h-screen flex flex-col">
+          <Header
+            cartCount={cart.reduce((a, b) => a + b.quantity, 0)}
+            onOpenCart={() => setIsCartOpen(true)}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            selectedType={selectedType}
+            onSelectType={setSelectedType}
+          />
+
+          {/* Hero Banner */}
+          <div className="bg-gradient-to-r from-pink-100 via-purple-50 to-indigo-100 py-10 px-4 text-center">
+            <h1 className="font-heading font-extrabold text-3xl sm:text-4xl text-slate-900">
+              Modern Crocs & Handcrafted Bags
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 mt-2">
+              Filter by Women, Men, Kids. Order directly to WhatsApp (+502 52506084)
+            </p>
+          </div>
+
+          {/* Filters & Grid */}
+          <main className="max-w-7xl mx-auto px-4 py-8 flex-1 w-full">
+            <div className="bg-white p-4 rounded-2xl shadow-sm mb-6 flex flex-wrap gap-2 items-center justify-between">
+              <div className="flex gap-2">
+                {['ALL', 'Crocs', 'Bags'].map((t) => (
+                  <button key={t} onClick={() => setSelectedType(t)} className={`px-3 py-1.5 rounded-xl text-xs font-bold ${selectedType === t ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-700'}`}>
+                    {t}
+                  </button>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                {['ALL', 'Women', 'Men', 'Kids'].map((a) => (
+                  <button key={a} onClick={() => setSelectedCategory(a)} className={`px-3 py-1 rounded-xl text-xs font-bold ${selectedCategory === a ? 'bg-pink-600 text-white' : 'bg-pink-50 text-pink-700'}`}>
+                    {a}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {filtered.map((prod) => (
+                <div key={prod.id} className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between hover:shadow-lg transition-all">
+                  <div>
+                    <img src={prod.images[0]} alt={prod.title} className="w-full h-48 object-contain mb-4" />
+                    
+                    {/* CROSS-CATEGORY BADGES */}
+                    <div className="flex gap-1 mb-2">
+                      {prod.target_audience.map((aud) => (
+                        <span key={aud} className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${aud === 'Women' ? 'badge-women' : aud === 'Men' ? 'badge-men' : 'badge-kids'}`}>
+                          {aud}
+                        </span>
+                      ))}
+                    </div>
+
+                    <h3 className="font-heading font-bold text-slate-900 text-base">{prod.title}</h3>
+                    <p className="text-xs text-slate-500 mt-1">{prod.description}</p>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                    <span className="font-heading font-extrabold text-lg text-slate-900">${prod.price}</span>
+                    <button onClick={() => handleAddToCart(prod)} className="px-4 py-2 bg-slate-900 hover:bg-pink-600 text-white text-xs font-bold rounded-2xl transition-colors">
+                      + Add to Cart
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </main>
+
+          {/* Cart Drawer */}
+          {isCartOpen && (
+            <div className="fixed inset-0 z-50 flex justify-end">
+              <div className="fixed inset-0 drawer-backdrop" onClick={() => setIsCartOpen(false)} />
+              <div className="relative w-full max-w-md bg-white h-full shadow-2xl p-6 flex flex-col justify-between z-10">
+                <div>
+                  <div className="flex justify-between items-center pb-4 border-b border-slate-100">
+                    <h2 className="font-heading font-bold text-lg">Your Cart ({cart.reduce((a, b) => a + b.quantity, 0)})</h2>
+                    <button onClick={() => setIsCartOpen(false)} className="text-slate-400 font-bold">✕</button>
+                  </div>
+
+                  <div className="py-4 space-y-3 max-h-[50vh] overflow-y-auto">
+                    {cart.map((item) => (
+                      <div key={item.id} className="flex justify-between items-center p-3 bg-slate-50 rounded-xl">
+                        <div>
+                          <h4 className="font-bold text-xs">{item.title}</h4>
+                          <span className="text-[10px] text-pink-600 font-semibold">[{item.target_audience.join(', ')}]</span>
+                          <p className="text-xs font-bold">${item.price}</p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <button onClick={() => handleQty(item.id, -1)} className="w-6 h-6 bg-slate-200 rounded font-bold text-xs">-</button>
+                          <span className="text-xs font-bold">{item.quantity}</span>
+                          <button onClick={() => handleQty(item.id, 1)} className="w-6 h-6 bg-slate-200 rounded font-bold text-xs">+</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {cart.length > 0 && (
+                    <div className="space-y-2 pt-4 border-t border-slate-100">
+                      <input type="text" placeholder="Your Name" value={custName} onChange={(e) => setCustName(e.target.value)} className="w-full text-xs p-2 bg-slate-50 border rounded-xl" />
+                      <input type="text" placeholder="Delivery Address" value={custAddr} onChange={(e) => setCustAddr(e.target.value)} className="w-full text-xs p-2 bg-slate-50 border rounded-xl" />
+                      <textarea placeholder="Order notes..." value={custNotes} onChange={(e) => setCustNotes(e.target.value)} className="w-full text-xs p-2 bg-slate-50 border rounded-xl h-16" />
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-4 border-t border-slate-100 space-y-3">
+                  <div className="flex justify-between font-bold text-sm">
+                    <span>Total Amount:</span>
+                    <span className="text-pink-600 text-lg">${totalAmount.toFixed(2)}</span>
+                  </div>
+                  <button
+                    onClick={triggerWhatsApp}
+                    disabled={cart.length === 0}
+                    className="w-full py-3.5 bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold rounded-2xl shadow-lg flex items-center justify-center space-x-2 whatsapp-glow disabled:opacity-50"
+                  >
+                    <span>💬 Order via WhatsApp (+502 52506084)</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
