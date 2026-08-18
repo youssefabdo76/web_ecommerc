@@ -6,35 +6,31 @@
     <title>CROCBAG | Modern Crocs & Bags Store - WhatsApp Checkout</title>
     <meta name="description" content="Shop modern Crocs clogs, platform slides, and handcrafted tote bags for Women, Men, and Kids. Order instantly via WhatsApp." />
     
+    <!-- Instant Theme Initialization Script (Prevents FOUC & Hydration Mismatch) -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('crocbag_theme');
+          var supportDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (saved === 'dark' || (!saved && supportDark)) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS CDN for instant styling execution -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-              heading: ['Outfit', 'sans-serif'],
-            },
-            colors: {
-              whatsapp: '#25D366',
-              'whatsapp-dark': '#1FA651',
-            }
-          }
-        }
-      }
-    </script>
-    
-    <!-- Custom CSS -->
-    <script type="module" crossorigin src="/assets/index-BQUTx7wL.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CahS-YBw.css">
+    <!-- Custom CSS (Vite PostCSS processes Tailwind) -->
+    <script type="module" crossorigin src="/assets/index-BbOaFfPn.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-JWN2BIXR.css">
   </head>
-  <body class="bg-slate-50 text-slate-900 font-sans antialiased">
+  <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors duration-300">
     <div id="root"></div>
   </body>
 </html>

@@ -182,10 +182,10 @@ export const PRODUCTS = [
 ];
 
 export const AUDIENCE_CATEGORIES = [
-  { id: "ALL", label: "All Audiences", badgeColor: "bg-gray-100 text-gray-800 border-gray-200" },
-  { id: "Women", label: "Women", badgeColor: "bg-pink-100 text-pink-700 border-pink-200 hover:bg-pink-200" },
-  { id: "Men", label: "Men", badgeColor: "bg-sky-100 text-sky-700 border-sky-200 hover:bg-sky-200" },
-  { id: "Kids", label: "Kids", badgeColor: "bg-amber-100 text-amber-800 border-amber-200 hover:bg-amber-200" }
+  { id: "ALL", label: "All Audiences", badgeColor: "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700" },
+  { id: "Women", label: "Women", badgeColor: "bg-pink-100 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300 border-pink-200 dark:border-pink-900/50 hover:bg-pink-200 dark:hover:bg-pink-900/80" },
+  { id: "Men", label: "Men", badgeColor: "bg-sky-100 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-900/50 hover:bg-sky-200 dark:hover:bg-sky-900/80" },
+  { id: "Kids", label: "Kids", badgeColor: "bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-900/50 hover:bg-amber-200 dark:hover:bg-amber-900/80" }
 ];
 
 export const PRODUCT_TYPES = [
