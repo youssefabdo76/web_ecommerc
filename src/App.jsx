@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { useProducts } from './hooks/useProducts';
 import { Header } from './components/Header';
 import { CategoryFilter } from './components/CategoryFilter';
@@ -359,6 +360,9 @@ export function App() {
         onSelectCategory={setSelectedCategory}
         onSelectType={setSelectedType}
       />
+
+      {/* Vercel Web Analytics */}
+      <Analytics />
 
     </div>
   );
